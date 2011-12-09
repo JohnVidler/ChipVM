@@ -1,6 +1,6 @@
 package hardware;
 
-public abstract class Instruction implements Comparable
+public abstract class Instruction implements Comparable<Object>
 {
 	protected String name;
 	protected int opcode;
@@ -25,7 +25,7 @@ public abstract class Instruction implements Comparable
 	public int getOpcode() { return opcode; }
 	public int getMask() { return mask; }
 	
-	public abstract int operator( Processor p, Memory m, int op );
+	public abstract int operator( Processor p, Memory m, int op ) throws Throwable;
 	
 	public int compareTo( Object o )
 	{

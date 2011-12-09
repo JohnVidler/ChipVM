@@ -28,7 +28,7 @@ public class InstructionSet
 		}
 	}
 	
-	public int doOp( Processor p, Memory m, int op ) throws NoSuchOpcodeException
+	public int doOp( Processor p, Memory m, int op ) throws Throwable
 	{
 		for( int i=0; i<instructions.size(); i++ )
 		{

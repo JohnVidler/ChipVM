@@ -1,5 +1,5 @@
 CC=javac
-CFLAGS=
+CFLAGS=-Xlint:unchecked
 #-Xlint:unchecked
 
 DRIVER=PicVM

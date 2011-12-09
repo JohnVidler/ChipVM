@@ -20,7 +20,7 @@ public class PicVM
 		
 		try
 		{
-			FileInputStream reader = new FileInputStream( "demo.o" );
+			FileInputStream reader = new FileInputStream( "demo.hex" );
 			
 			int op = 0;
 			int offset = 0;

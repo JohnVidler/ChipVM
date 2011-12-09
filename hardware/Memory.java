@@ -9,6 +9,9 @@ public class Memory
 	protected int max;
 	protected int width;
 	
+	public boolean debug = false;
+	
+	
 	public Memory( int size, int width )
 	{
 		aliases = new TreeMap<String, Integer>();
@@ -39,9 +42,14 @@ public class Memory
 		return set( offset, value );
 	}
 	
-	public int set( int offset, int value )
+	public int set( int offset, int value ) throws NoSuchAliasException
 	{
-		System.out.println( "[Mem]\t0x" +Integer.toHexString(offset)+ " = " +Integer.toHexString(value) );
+		if( debug )
+			System.out.println( "[Mem]\t0x" +Integer.toHexString(offset)+ " = " +Integer.toHexString(value) );
+		
+		if( offset == aliases.get("INDF") )
+			offset = get( "FSR" );
+		
 		sRAM[offset] = value;
 		return sRAM[offset];
 	}
@@ -55,9 +63,14 @@ public class Memory
 		return get( offset );
 	}
 	
-	public int get( int offset )
+	public int get( int offset ) throws NoSuchAliasException
 	{
-		System.out.println( "[Mem]\t0x" +Integer.toHexString(offset)+ " = " +Integer.toHexString(sRAM[offset]) );
+		if( debug )
+			System.out.println( "[Mem]\t0x" +Integer.toHexString(offset)+ " = " +Integer.toHexString(sRAM[offset]) );
+			
+		if( offset == aliases.get("INDF") )
+			offset = get( "FSR" );
+		
 		return sRAM[offset];
 	}
 	
@@ -70,9 +83,9 @@ public class Memory
 		return inc( offset );
 	}
 	
-	public int inc( int offset )
+	public int inc( int offset ) throws NoSuchAliasException
 	{
-		return ++sRAM[offset];
+		return set( offset, get( offset ) + 1 );
 	}
 	
 	public int dec( String name ) throws NoSuchAliasException
@@ -84,9 +97,9 @@ public class Memory
 		return dec( offset );
 	}
 	
-	public int dec( int offset )
+	public int dec( int offset ) throws NoSuchAliasException
 	{
-		return --sRAM[offset];
+		return set( offset, get( offset ) - 1 );
 	}
 	
 }

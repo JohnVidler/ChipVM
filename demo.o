@@ -1,4 +1,0 @@
-build/default/production/demo.o : \
-	/home/john/MPLABXProjects/PIC18F2420\ Test.X/demo.asm \
-	/opt/microchip/mplabx/mpasmx/P10F200.INC \
-
