@@ -5,11 +5,11 @@ CFLAGS=-Xlint:unchecked
 DRIVER=PicVM
 
 all:
-	$(CC) $(CFLAGS)  ui/*.java hardware/*.java *.java
+	$(CC) $(CFLAGS)  ui/*.java hardware/*.java file/*.java *.java
 
 docs:
-	javadoc -d Docs ui/*.java hardware/*.java *.java
+	javadoc -d Docs ui/*.java hardware/*.java file/*.java *.java
 
 clean:
 	rm -rfv Docs
-	rm -rfv  ui/*.class hardware/*.class *.class
+	rm -rfv  ui/*.class hardware/*.class file/*.class *.class

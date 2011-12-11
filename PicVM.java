@@ -1,5 +1,6 @@
 import ui.*;
 import hardware.*;
+import file.*;
 
 import java.io.*;
 
@@ -15,27 +16,13 @@ public class PicVM
 	public PicVM( String[] args )
 	{
 		//mainWin = new AppWindow();
-		
-		int progmem[] = new int[4096];
+		int[] progmem = new int[4096];
+		for( int idx=0; idx<4096; idx++ )
+			progmem[idx] = 0;	// Normally a 'NOP' instruction
 		
 		try
 		{
-			FileInputStream reader = new FileInputStream( "demo.hex" );
-			
-			int op = 0;
-			int offset = 0;
-			while( (op = reader.read()) != -1 )
-			{
-				progmem[offset++] = op;
-				System.out.print( "Flashed " +offset+ "B\r" );
-			}
-			System.out.println("");
-			
-			progmem[0] = 0x1C;
-			progmem[1] = 0x0E;
-			progmem[2] = 0xEF;
-			
-			reader.close();
+			progmem = Hex32Parser.toProgmem( new File( "demo.hex" ) );
 		}
 		catch( Throwable t )
 		{
