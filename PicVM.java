@@ -16,13 +16,11 @@ public class PicVM
 	public PicVM( String[] args )
 	{
 		//mainWin = new AppWindow();
-		int[] progmem = new int[4096];
-		for( int idx=0; idx<4096; idx++ )
-			progmem[idx] = 0;	// Normally a 'NOP' instruction
+		int[] progmem = null;
 		
 		try
 		{
-			progmem = Hex32Parser.toProgmem( new File( "demo.hex" ) );
+			progmem = Hex32Parser.toProgmem( new File( "demo.hex" ), 4096 );
 		}
 		catch( Throwable t )
 		{

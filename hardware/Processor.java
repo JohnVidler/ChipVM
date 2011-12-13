@@ -24,7 +24,7 @@ public class Processor extends Chip
 			{
 				int op = op_readNextInstruction();
 			
-				System.out.print( "0x" +Integer.toHexString(pc) + "\t" + Integer.toBinaryString(op) + "\t" );
+				System.out.print( "0x" +Integer.toHexString(pc) + "\t" + Integer.toHexString(op) + "\t" );
 				
 				try
 				{
@@ -92,7 +92,7 @@ public class Processor extends Chip
 			public int operator( Processor p, Memory m, int op ) throws Throwable
 			{
 				int offset = op & 0x1FF;
-				//p.pc = offset-1;
+				p.pc = offset-1;
 				System.out.println( "GOTO 0x" + Integer.toHexString(offset) );
 				return 0;
 			}
@@ -316,7 +316,7 @@ public class Processor extends Chip
 	
 	protected int op_readNextInstruction()
 	{
-		int idx = pc * 2;
+		/*int idx = pc * 2;
 		
 		int opcode = 0;	//NOP
 		
@@ -325,7 +325,9 @@ public class Processor extends Chip
 		else
 			opcode = (progmem[idx] & 0xFF) | ((progmem[idx-1] & 0xFF) << 8 );
 		
-		return opcode & 0xFFF;
+		return opcode & 0xFFF;*/
+		
+		return progmem[pc];
 	}
 	
 }
