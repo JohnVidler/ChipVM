@@ -28,7 +28,7 @@ public abstract class Hex32Parser
 					hex[i/2] = "" + buffer[i] + buffer[i+1];
 				
 				// Extract data from the line...
-				int size = Integer.parseInt( hex[0], 16 );
+				int size = Integer.parseInt( hex[0], 16 )/2;
 				int address = Integer.parseInt( hex[1]+hex[2], 16 );
 				int type = Integer.parseInt( hex[3] );
 				
@@ -40,7 +40,7 @@ public abstract class Hex32Parser
 						for( int idx=0; idx<size; idx++ )
 						{
 							int offset = idx * 2;
-							int data = Integer.parseInt( "" + hex[5+idx] + hex[4+idx], 16 );
+							int data = Integer.parseInt( "" + hex[5+offset] + hex[4+offset], 16 );
 							progmem[baseAddress+address+idx] = data;
 							System.out.println( Integer.toHexString(address+idx) + " -> " + Integer.toHexString(data) );
 						}

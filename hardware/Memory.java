@@ -33,11 +33,25 @@ public class Memory implements TableModel
 	public void setAlias( int offset, String name )
 	{
 		aliases.put( name, offset );
+		notifyListeners( offset );
 	}
 	
 	public void clearAlias( String name )
 	{
+		int offset = aliases.get( name );
 		aliases.remove( name );
+		
+		notifyListeners( offset );
+	}
+	
+	public int getSize()
+	{
+		return sRAM.length;
+	}
+	
+	public int getWidth()
+	{
+		return width;
 	}
 	
 	public String getOffsetAlias( int offset )
@@ -64,16 +78,48 @@ public class Memory implements TableModel
 		if( debug )
 			System.out.println( "[Mem]\t0x" +Integer.toHexString(offset)+ " = " +Integer.toHexString(value) );
 		
-		if( offset == aliases.get("INDF") )
-			offset = get( "FSR" );
+		if( aliases.containsKey( "INDF" ) && aliases.containsKey( "FSR" ) )
+		{
+			if( offset == aliases.get("INDF") )
+				offset = get( "FSR" );
+		}
 		
-		sRAM[offset] = value;
+		sRAM[offset] = value % max;
 		
 		notifyListeners( offset );
 		
 		return sRAM[offset];
 	}
 	
+	public int setBit( String name, int bit ) throws NoSuchAliasException
+	{
+		Integer offset = aliases.get( name );
+		if( offset == null )
+			throw new NoSuchAliasException( "No such alias '" +name+ "'" );
+		
+		return setBit( offset, bit );
+	}
+	public int setBit( int offset, int bit ) throws NoSuchAliasException
+	{
+		return set( offset, get( offset ) | (1 << bit) );
+	}
+	
+	public int clearBit( String name, int bit ) throws NoSuchAliasException
+	{
+		Integer offset = aliases.get( name );
+		if( offset == null )
+			throw new NoSuchAliasException( "No such alias '" +name+ "'" );
+		
+		return clearBit( offset, bit );
+	}
+	public int clearBit( int offset, int bit ) throws NoSuchAliasException
+	{
+		int allMask = (int)Math.pow(2, width)-1;
+		
+		return set( offset, get( offset ) & (allMask ^ (1 << bit)) );
+	}
+	
+		
 	public int get( String name ) throws NoSuchAliasException
 	{
 		Integer offset = aliases.get( name );
@@ -87,9 +133,12 @@ public class Memory implements TableModel
 	{
 		if( debug )
 			System.out.println( "[Mem]\t0x" +Integer.toHexString(offset)+ " = " +Integer.toHexString(sRAM[offset]) );
-			
-		if( offset == aliases.get("INDF") )
-			offset = get( "FSR" );
+		
+		if( aliases.containsKey( "INDF" ) && aliases.containsKey( "FSR" ) )
+		{
+			if( offset == aliases.get("INDF") )
+				offset = get( "FSR" );
+		}
 		
 		return sRAM[offset];
 	}
@@ -137,6 +186,8 @@ public class Memory implements TableModel
 			}
 		}
 	}
+	
+	
 	
 	
 	/** TableModel required methods **/

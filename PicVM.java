@@ -19,7 +19,7 @@ public class PicVM
 		
 		try
 		{
-			progmem = Hex32Parser.toProgmem( new File( "demo.hex" ), 4096 );
+			progmem = Hex32Parser.toProgmem( new File( "demo.hex" ), 255 );
 		}
 		catch( Throwable t )
 		{
@@ -28,13 +28,10 @@ public class PicVM
 		}
 		
 		
-		Processor proc = new Processor( progmem );
-		clk = new Clock();
-		//clk.setFrequency( 200 );
-		clk.setFrequency( 4 );
+		Processor proc = new Pic10f200( progmem );
 		
 		mainWin = new AppWindow( proc );
 		
-		clk.attach( proc.clkWire );
+		//clk.attach( proc.clkWire );
 	}
 }
