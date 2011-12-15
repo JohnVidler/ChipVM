@@ -15,7 +15,6 @@ public class PicVM
 	public static void main( String[] args ){ new PicVM( args ); }
 	public PicVM( String[] args )
 	{
-		//mainWin = new AppWindow();
 		int[] progmem = null;
 		
 		try
@@ -31,9 +30,11 @@ public class PicVM
 		
 		Processor proc = new Processor( progmem );
 		clk = new Clock();
-		clk.setFrequency( 200 );
+		//clk.setFrequency( 200 );
+		clk.setFrequency( 4 );
+		
+		mainWin = new AppWindow( proc );
+		
 		clk.attach( proc.clkWire );
-		
-		
 	}
 }

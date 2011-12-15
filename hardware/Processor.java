@@ -313,20 +313,13 @@ public class Processor extends Chip
 		instructionSet.dump();
 	}
 	
+	public Memory getRAM() { return registers; }
+	public Memory getStack() { return stack; }
+	public int[] getROM() { return progmem; }
+	
 	
 	protected int op_readNextInstruction()
 	{
-		/*int idx = pc * 2;
-		
-		int opcode = 0;	//NOP
-		
-		if( pc % 2 == 0 )
-			opcode = ((progmem[idx] & 0xFF) << 4) | ((progmem[idx+1] & 0xFF) >> 4);
-		else
-			opcode = (progmem[idx] & 0xFF) | ((progmem[idx-1] & 0xFF) << 8 );
-		
-		return opcode & 0xFFF;*/
-		
 		return progmem[pc];
 	}
 	
