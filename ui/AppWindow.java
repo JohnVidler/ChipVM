@@ -72,7 +72,7 @@ public class AppWindow extends JFrame
 			public void actionPerformed( ActionEvent e )
 			{
 				clk.attach( processor.clkWire );
-				clk.setFrequency( 10 );
+				clk.setFrequency( 100 );
 			}
 		});
 		chipControlBar.add( runBtn );

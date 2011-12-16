@@ -8,7 +8,6 @@ public class Processor extends Chip
 	protected InstructionSet instructionSet = null;
 	protected Memory registers = null;
 	protected Stack stack = null;
-	public int pc = 0;
 	
 	protected int busWidth = 8;
 	
@@ -22,7 +21,7 @@ public class Processor extends Chip
 			{
 				int op = op_readNextInstruction();
 			
-				System.out.print( "0x" +Integer.toHexString(pc) + "\t" + Integer.toHexString(op) + "\t" );
+				System.out.print( "0x" +Integer.toHexString(getPC()) + "\t" + Integer.toHexString(op) + "\t" );
 				
 				try
 				{
@@ -31,22 +30,17 @@ public class Processor extends Chip
 				catch( Throwable e )
 				{
 					skippedInstructions++;
-					System.out.println("");
+					System.out.println( e.getMessage() );
 					//e.printStackTrace();
 				}
 				
 				// Catch if the processor runs out of PROGMEM
-				if( pc + 1 > progmem.getSize()-1 )
+				if( getPC() + 1 > progmem.getSize()-1 )
 				{
 					System.out.println( "Processor ran off the end of PROGMEM!" );
 					System.out.println( "Skipped " +skippedInstructions+ " instructions." );
 					System.exit(1);
 				}
-				
-				try { registers.set( "PCL", pc ); }
-				catch( Throwable t ){ System.err.println( "Could not set PCL (No PCL?)" ); }
-				
-				pc = (pc + 1) % (int)Math.pow(2, busWidth+1);
 			}
 		}
 	};
@@ -77,6 +71,7 @@ public class Processor extends Chip
 	public Memory getRAM() { return registers; }
 	public Memory getStack() { return stack; }
 	public Memory getROM() { return progmem; }
+	public int getPC(){ return 0x00; }
 	
 	
 	protected int op_readNextInstruction()
@@ -84,13 +79,17 @@ public class Processor extends Chip
 		int op = 0;
 		try
 		{
-			op = progmem.get(pc);
+			op = progmem.get( registers.get( "PCL" ) );
 		}
 		catch( Exception err )
 		{
 			System.err.println( err );
 			err.printStackTrace();
 		}
+		
+		try { registers.inc( "PCL" ); }
+		catch( Throwable t ){ System.err.println( "Could not inc PCL (No PCL?)" ); System.exit(1); }
+				
 		return op;
 	}
 	

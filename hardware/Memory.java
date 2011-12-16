@@ -84,6 +84,11 @@ public class Memory implements TableModel
 				offset = get( "FSR" );
 		}
 		
+		// Store only positive integers...
+		while( value < 0 )
+			value = max + value;
+			
+		// ...that actually fit!
 		sRAM[offset] = value % max;
 		
 		notifyListeners( offset );

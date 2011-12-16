@@ -4,12 +4,7 @@ import java.util.*;
 
 public class InstructionSet
 {
-	ArrayList<Instruction> instructions = null;
-	
-	public InstructionSet()
-	{
-		instructions = new ArrayList<Instruction>();
-	}
+	ArrayList<Instruction> instructions = new ArrayList<Instruction>();
 	
 	public void add( Instruction i )
 	{
@@ -35,7 +30,7 @@ public class InstructionSet
 			if( (op & instructions.get(i).getMask()) == instructions.get(i).getOpcode() )
 				return instructions.get(i).operator( p, m, op );
 		}
-		throw new NoSuchOpcodeException( "No opcode matched '" +op+ "'" );
+		throw new NoSuchOpcodeException( "No opcode matched '" +Integer.toBinaryString(op)+ "'" );
 	}
 	
 }
