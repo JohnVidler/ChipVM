@@ -78,6 +78,32 @@ public class Pic10f200 extends Processor
 			}
 		} );
 		
+		// ANDWF
+		instructionSet.add( new Instruction( "ANDWF", "0001 01** ****" )
+		{
+			public int operator( Processor p, Memory m, int op ) throws Throwable
+			{
+				int offset = op & 0x01F;
+				int d = ((op & 0x020) == 0x020)?1:0;
+				
+				int result = (m.get( offset ) & wReg) % maxValue;
+				
+				if( d == 0 )
+					wReg = result;
+				else
+					m.set( offset, result );
+					
+				// Set the zero status bit, if zero
+				if( result == 0 )
+					m.setBit( "STATUS", 2 );
+				else
+					m.clearBit( "STATUS", 2 );
+				
+				System.out.println( "ANDWF 0x" +Integer.toHexString(offset)+ ", [" +d+ "] = " + result );
+				return 0;
+			}
+		} );
+		
 		// ANDLW
 		instructionSet.add( new Instruction( "ANDLW", "1110 **** ****" )
 		{
@@ -106,8 +132,8 @@ public class Pic10f200 extends Processor
 			}
 		} );
 		
-		// CRLF
-		instructionSet.add( new Instruction( "CRLF", "0000 011* ****" )
+		// CLRF
+		instructionSet.add( new Instruction( "CLRF", "0000 011* ****" )
 		{
 			public int operator( Processor p, Memory m, int op ) throws Throwable
 			{
@@ -120,8 +146,34 @@ public class Pic10f200 extends Processor
 			}
 		} );
 		
-		// CRLW
-		instructionSet.add( new Instruction( "CRLW", "0000 0100 0000" )
+		// COMF
+		instructionSet.add( new Instruction( "COMF", "0010 01** ****" )
+		{
+			public int operator( Processor p, Memory m, int op ) throws Throwable
+			{
+				int offset = op & 0x01F;
+				int d = ((op & 0x020) == 0x020)?1:0;
+				
+				int result = ~m.get( offset );
+				
+				if( d == 0 )
+					wReg = result;
+				else
+					m.set( offset, result );
+					
+				// Set the zero status bit, if zero
+				if( result == 0 )
+					m.setBit( "STATUS", 2 );
+				else
+					m.clearBit( "STATUS", 2 );
+				
+				System.out.println( "CLRF 0x" +Integer.toHexString(offset) );
+				return 0;
+			}
+		} );
+		
+		// CLRW
+		instructionSet.add( new Instruction( "CLRW", "0000 0100 0000" )
 		{
 			public int operator( Processor p, Memory m, int op ) throws Throwable
 			{
