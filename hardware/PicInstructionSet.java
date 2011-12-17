@@ -25,7 +25,7 @@ public class PicInstructionSet extends InstructionSet
 		add( instruction_SWAPF );
 		add( instruction_XORWF );
 		add( instruction_BCF );
-		//add( instruction_BSF );
+		add( instruction_BSF );
 		add( instruction_BTFSC );
 		add( instruction_BTFSS );
 		add( instruction_ANDLW );
@@ -35,8 +35,8 @@ public class PicInstructionSet extends InstructionSet
 		add( instruction_IORLW );
 		add( instruction_MOVLW );
 		//add( instruction_OPTION );
-		//add( instruction_RETLW );
-		//add( instruction_SLEEP );
+		add( instruction_RETLW );
+		add( instruction_SLEEP );
 		//add( instruction_TRIS );
 		add( instruction_XORLW );
 	}
@@ -45,6 +45,16 @@ public class PicInstructionSet extends InstructionSet
 	{
 		pcOffset = offset;
 	}
+	
+	// SLEEP
+	public Instruction instruction_SLEEP = new Instruction( "SLEEP", "0000 0000 0011" )
+	{
+		public int operator( Processor chip, Memory m, int op ) throws Throwable
+		{
+			System.out.println( "SLEEP - Powerdown mode not implemented!" );
+			return 0;
+		}
+	};
 	
 	// CLRWDT
 	public Instruction instruction_CLRWDT = new Instruction( "CLRWDT", "0000 0000 0100" )
@@ -126,7 +136,7 @@ public class PicInstructionSet extends InstructionSet
 		public int operator( Processor p, Memory m, int op ) throws Throwable
 		{
 			int offset = op & 0x1FF;
-			m.set( pcOffset, offset-1 );
+			m.set( pcOffset, offset );
 			System.out.println( "GOTO 0x" + Integer.toHexString(offset) );
 			return 0;
 		}
@@ -561,9 +571,24 @@ public class PicInstructionSet extends InstructionSet
 			int bit = (op & 0x0E0) >> 5;
 			int file = op & 0x01F;
 			
-			m.set( file, m.get( file ) & ~(1 << bit) );
+			m.clearBit( file, bit );
 			
 			System.out.println( "BCF " +bit+ ", " +Integer.toHexString(file) );
+			return 0;
+		}
+	};
+	
+	// BSF 
+	public Instruction instruction_BSF = new Instruction( "BSF", "0101 **** ****" )
+	{
+		public int operator( Processor p, Memory m, int op ) throws Throwable
+		{
+			int bit = (op & 0x0E0) >> 5;
+			int file = op & 0x01F;
+			
+			m.setBit( file, bit );
+			
+			System.out.println( "BSF " +bit+ ", " +Integer.toHexString(file) );
 			return 0;
 		}
 	};

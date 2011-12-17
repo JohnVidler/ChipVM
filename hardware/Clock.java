@@ -52,8 +52,8 @@ public class Clock
 								listener.stateChange( state );
 							}
 							
-							/*try { Thread.sleep( 1000/frequency ); }
-							catch( Exception e ) { System.err.println( "Clock overrun! Timings may be off!" ); }*/
+							try { Thread.sleep( 1000/frequency ); }
+							catch( Exception e ) { System.err.println( "Clock overrun! Timings may be off!" ); }
 						}
 					}
 				} );
