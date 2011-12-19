@@ -1,10 +1,19 @@
 package hardware;
 
 import java.util.*;
+import java.io.*;
+
+import util.DebugPrintStream;
 
 public class InstructionSet
 {
-	ArrayList<Instruction> instructions = new ArrayList<Instruction>();
+	protected ArrayList<Instruction> instructions = new ArrayList<Instruction>();
+	protected static DebugPrintStream out = new DebugPrintStream( System.out );
+	
+	public InstructionSet()
+	{
+		out.setEnabled( false );
+	}
 	
 	public void add( Instruction i )
 	{
@@ -12,7 +21,16 @@ public class InstructionSet
 		Collections.sort( instructions );
 		Collections.reverse( instructions );
 		
-		System.out.println( "Added instruction " +i.getOpcode() );
+		out.println( "Added instruction " +i.getOpcode() );
+	}
+	
+	public void remove( String mnemonic )
+	{
+		for( int i=0; i<instructions.size(); i++ )
+		{
+			if( instructions.get(i).getName().equalsIgnoreCase( mnemonic ) )
+				instructions.remove( i );
+		}
 	}
 	
 	public void dump()

@@ -4,6 +4,13 @@
     ;config = _IntRC_OSC | _WDT_OFF
     org 0
 
+    goto init
+
+swap
+    swapf   GPIO, 1
+    return
+
+init
     movlw   0x00
     movwf   GPIO
 
@@ -11,8 +18,8 @@
     BSF     GPIO, 5
 
 loop
-    swapf   GPIO, 1
 
+    call    swap
 
     goto    loop  ; endless loop
     end
