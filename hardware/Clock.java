@@ -8,6 +8,8 @@ public class Clock
 	
 	protected WireState state = WireState.LOW;
 	protected WireListener listener = null;
+
+	protected long clocksPerSec = 0;
 	
 	public Clock()
 	{
@@ -37,8 +39,14 @@ public class Clock
 			internalThread = new Thread( new Runnable(){
 					public void run()
 					{
+
+						long step = 1000000000 / frequency;
+						long _until = 0;
+						long clocks = 0;
+						long clocksFrame = 0;
 						while( running )
 						{
+							clocksFrame = System.currentTimeMillis();
 							switch( state )
 							{
 								case LOW:		state = WireState.RISING;	break;
@@ -52,8 +60,26 @@ public class Clock
 								listener.stateChange( state );
 							}
 							
-							try { Thread.sleep( 1000/frequency ); }
-							catch( Exception e ) { System.err.println( "Clock overrun! Timings may be off!" ); }
+							try
+							{
+								_until = System.nanoTime() + step;
+								while( System.nanoTime() < _until )
+								{
+									/* Spin */
+								}
+							}
+							catch( Exception e )
+							{
+								System.err.println( "Clock overrun! Timings may be off!" );
+							}
+
+							clocks++;
+							if( System.currentTimeMillis() < clocksFrame )
+							{
+								clocksFrame = System.currentTimeMillis() + 1000;
+								System.out.println( "Clocks/sec -> " +clocks );
+								clocks = 0;
+							}
 						}
 					}
 				} );

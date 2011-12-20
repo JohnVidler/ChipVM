@@ -15,11 +15,11 @@ public class DebugPrintStream extends PrintStream
 	
 	public void write( int b )
 	{
-		if( enabled )
-			super.write( b );
+		//if( enabled )
+		//	super.write( b );
 	}
 	
-	/*public void println( String data )
+	public void println( String data )
 	{
-	}*/
+	}
 }
