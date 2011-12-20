@@ -6,7 +6,7 @@
             <name>pic10f200</name>
             <creation-uuid>26e625d2-7b5b-4487-95be-29a303941f73</creation-uuid>
             <make-project-type>0</make-project-type>
-            <c-extensions/>
+            <c-extensions>c</c-extensions>
             <cpp-extensions/>
             <header-extensions/>
             <sourceEncoding>ISO-8859-1</sourceEncoding>

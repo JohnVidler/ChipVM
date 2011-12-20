@@ -18,4 +18,8 @@ public class DebugPrintStream extends PrintStream
 		if( enabled )
 			super.write( b );
 	}
+	
+	/*public void println( String data )
+	{
+	}*/
 }

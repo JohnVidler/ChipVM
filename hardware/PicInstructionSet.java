@@ -21,8 +21,8 @@ public class PicInstructionSet extends InstructionSet
 		add( PicInstructionSet.instruction_MOVF );
 		add( PicInstructionSet.instruction_MOVWF );
 		add( PicInstructionSet.instruction_NOP );
-		//add( PicInstructionSet.instruction_RLF );
-		//add( PicInstructionSet.instruction_RRF );
+		add( PicInstructionSet.instruction_RLF );
+		add( PicInstructionSet.instruction_RRF );
 		add( PicInstructionSet.instruction_SUBWF );
 		add( PicInstructionSet.instruction_SWAPF );
 		add( PicInstructionSet.instruction_XORWF );
@@ -36,10 +36,10 @@ public class PicInstructionSet extends InstructionSet
 		add( PicInstructionSet.instruction_GOTO );
 		add( PicInstructionSet.instruction_IORLW );
 		add( PicInstructionSet.instruction_MOVLW );
-		//add( PicInstructionSet.instruction_OPTION );
+		add( PicInstructionSet.instruction_OPTION );
 		add( PicInstructionSet.instruction_RETLW );
 		add( PicInstructionSet.instruction_SLEEP );
-		//add( PicInstructionSet.instruction_TRIS );
+		add( PicInstructionSet.instruction_TRIS );
 		add( PicInstructionSet.instruction_XORLW );
 	}
 	
@@ -48,12 +48,90 @@ public class PicInstructionSet extends InstructionSet
 		pcOffset = offset;
 	}
 	
+	// RLF (actually a RIGHT shift due to endian-ness)
+	public static Instruction instruction_RLF = new Instruction( "RLF", "0011 01** ****" )
+	{
+		public int operator( Processor chip, Memory m, int op ) throws Throwable
+		{
+			PicProcessor p = (PicProcessor)chip;
+			int offset = op & 0x01F;
+			int d = ((op & 0x020) == 0x020)?1:0;
+			
+			int value = m.get( offset ) & 0xFF;
+			int oldStatus = (m.get( "STATUS" ) & 0x01) << 7;
+			
+			// Check for zero-bit
+			if( (value & 0x01) == 0x01 )
+				m.setBit( "STATUS", 0 );
+			else
+				m.clearBit( "STATUS", 0 );
+			
+			// Actually store the new value
+			if( d == 0 )
+				p.wReg = ((value >> 1) & 0xFF) | oldStatus;
+			else
+				m.set( offset, ((value >> 1) & 0xFF) | oldStatus );
+			
+			out.println( "RLF " + Integer.toHexString(offset) + " [" +d+ "]" );
+			return 0;
+		}
+	};
+	
+	// RRF (actually a LEFT shift due to endian-ness)
+	public static Instruction instruction_RRF = new Instruction( "RRF", "0011 00** ****" )
+	{
+		public int operator( Processor chip, Memory m, int op ) throws Throwable
+		{
+			PicProcessor p = (PicProcessor)chip;
+			int offset = op & 0x01F;
+			int d = ((op & 0x020) == 0x020)?1:0;
+			
+			int value = m.get( offset );
+			int oldStatus = (m.get( "STATUS" ) & 0x01);
+			
+			// Check for zero-bit
+			if( (value & 0x80) == 0x80 )
+				m.setBit( "STATUS", 0 );
+			else
+				m.clearBit( "STATUS", 0 );
+			
+			// Actually store the new value
+			if( d == 0 )
+				p.wReg = ((value << 1) & 0xFF) | oldStatus;
+			else
+				m.set( offset, ((value << 1) & 0xFF) | oldStatus );
+			
+			out.println( "RRF " + Integer.toHexString(offset) + " [" +d+ "]" );
+			return 0;
+		}
+	};
+	
 	// SLEEP
 	public static Instruction instruction_SLEEP = new Instruction( "SLEEP", "0000 0000 0011" )
 	{
 		public int operator( Processor chip, Memory m, int op ) throws Throwable
 		{
 			out.println( "SLEEP - Powerdown mode not implemented!" );
+			return 0;
+		}
+	};
+	
+	// TRIS
+	public static Instruction instruction_TRIS = new Instruction( "TRIS", "0000 0000 0***" )
+	{
+		public int operator( Processor chip, Memory m, int op ) throws Throwable
+		{
+			out.println( "TRIS - TRIS registers ignored!" );
+			return 0;
+		}
+	};
+	
+	// OPTION
+	public static Instruction instruction_OPTION = new Instruction( "OPTION", "0000 0000 0010" )
+	{
+		public int operator( Processor chip, Memory m, int op ) throws Throwable
+		{
+			out.println( "OPTION - OPTION registers ignored!" );
 			return 0;
 		}
 	};
@@ -477,7 +555,7 @@ public class PicInstructionSet extends InstructionSet
 				int lowerAddress = op & 0x0FF;
 				int upperAddress = (m.get( "STATUS" ) & 0x30) << 4;
 				
-				p.stack.push( m.get( pcOffset ) );
+				p.stack.push( m.get( pcOffset )+1 );
 				m.set( pcOffset, lowerAddress );
 				
 				out.println( "CALL " +Integer.toBinaryString(m.get( pcOffset )) );
@@ -504,6 +582,8 @@ public class PicInstructionSet extends InstructionSet
 				p.wReg = op & 0x0FF;
 				
 				int newPC = p.stack.pop();
+				
+				out.println( "Stack address was: " +newPC );
 				
 				m.set( pcOffset, newPC );
 				

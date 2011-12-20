@@ -5,6 +5,7 @@ import java.util.*;
 
 public abstract class Hex32Parser
 {
+	public static final boolean MPLAB_KLUDGE = true;
 	
 	public static int[] toProgmem( File source, int progmemSize )
 	{
@@ -30,6 +31,10 @@ public abstract class Hex32Parser
 				// Extract data from the line...
 				int size = Integer.parseInt( hex[0], 16 )/2;
 				int address = Integer.parseInt( hex[1]+hex[2], 16 );
+				
+				if( MPLAB_KLUDGE )
+					address /= 2;
+				
 				int type = Integer.parseInt( hex[3] );
 				
 				int baseAddress = 0;
@@ -37,12 +42,13 @@ public abstract class Hex32Parser
 				switch( type )
 				{
 					case 0:
+						System.out.println( "Program data..." );
 						for( int idx=0; idx<size; idx++ )
 						{
 							int offset = idx * 2;
 							int data = Integer.parseInt( "" + hex[5+offset] + hex[4+offset], 16 );
 							progmem[baseAddress+address+idx] = data;
-							System.out.println( Integer.toHexString(address+idx) + " -> " + Integer.toHexString(data) );
+							System.out.println( Integer.toHexString(baseAddress+address+idx) + " -> " + Integer.toHexString(data) );
 						}
 						break;
 					
@@ -58,9 +64,6 @@ public abstract class Hex32Parser
 					default:
 						System.out.println( "Ignored type " +type );
 				}
-				
-				
-				System.out.println( "# " +Integer.toHexString(type) );
 				
 			}
 			

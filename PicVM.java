@@ -19,7 +19,7 @@ public class PicVM
 		
 		try
 		{
-			progmem = Hex32Parser.toProgmem( new File( "demo.hex" ), 255 );
+			progmem = Hex32Parser.toProgmem( new File( "demo.hex" ), 0xFF );
 		}
 		catch( Throwable t )
 		{
@@ -28,7 +28,8 @@ public class PicVM
 		}
 		
 		
-		Processor proc = new Pic10f200( progmem );
+		//Processor proc = new Pic10f200( progmem );
+		Processor proc = new Pic10f320( progmem );
 		
 		mainWin = new AppWindow( proc );
 		

@@ -10,12 +10,15 @@ public class Stack extends Memory
 		offset = 0;
 	}
 	
-	public void push( int data ) throws OutOfMemoryError
+	public void push( int data ) throws OutOfMemoryError, NoSuchAliasException
 	{
 		if( offset > sRAM.length )
 			throw new OutOfMemoryError( "Stack overflow!" );
+		if( offset < 0 )
+			throw new OutOfMemoryError( "Stack underflow!" );
 		
-		sRAM[offset] = data;
+		
+		set( offset, data );
 		offset++;
 	}
 	
@@ -24,12 +27,13 @@ public class Stack extends Memory
 		return sRAM[offset];
 	}
 	
-	public int pop() throws IndexOutOfBoundsException
+	public int pop() throws IndexOutOfBoundsException, NoSuchAliasException
 	{
 		if( offset < 0 )
-			throw new IndexOutOfBoundsException( "POP'd with nothing on the stack!" );
+			throw new OutOfMemoryError( "Stack underflow!" );
 		
-		return sRAM[offset--];
+		offset--;
+		return get( offset );
 	}
 	
 	

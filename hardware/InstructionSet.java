@@ -37,7 +37,7 @@ public class InstructionSet
 	{
 		for( int i=0; i<instructions.size(); i++ )
 		{
-			System.out.println( instructions.get(i).getOpcode() +" -> "+ instructions.get(i).getName() + " [" +Integer.toBinaryString(instructions.get(i).getMask())+ "]" );
+			System.out.println( instructions.get(i).getOpcode() +"\t->\t"+ instructions.get(i).getName() + "\t[" +Integer.toBinaryString(instructions.get(i).getMask())+ "]" );
 		}
 	}
 	

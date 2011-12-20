@@ -5,21 +5,19 @@
     org 0
 
     goto init
-
-swap
-    swapf   GPIO, 1
-    return
-
 init
-    movlw   0x00
+    movlw   0x01
     movwf   GPIO
 
-    BSF     GPIO, 2
-    BSF     GPIO, 5
+left
+    rrf     GPIO
+    btfss   GPIO, 7
+    goto left
 
-loop
+right
+    rlf     GPIO
+    btfss   GPIO, 0
+    goto right
 
-    call    swap
-
-    goto    loop  ; endless loop
+    goto    left  ; endless loop
     end

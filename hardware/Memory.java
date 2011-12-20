@@ -7,7 +7,10 @@ import javax.swing.*;
 
 public class Memory implements TableModel
 {
+	public static int UNIMPLEMENTED = 1;
+	
 	protected TreeMap<String, Integer> aliases = null;
+	protected int meta[];
 	protected int sRAM[];
 	protected int max;
 	protected int width;
@@ -17,14 +20,19 @@ public class Memory implements TableModel
 	/* TableModel variables */
 	protected Vector<TableModelListener>listeners = new Vector<TableModelListener>();
 	protected String[] columnNames = { "Offset", "Alias", "Value" };
+	protected int lastOffset = 0;
 	
 	
 	public Memory( int size, int width )
 	{
 		aliases = new TreeMap<String, Integer>();
+		meta = new int[ size ];
 		sRAM = new int[ size ];
 		for( int i=0; i<size; i++ )
+		{
 			sRAM[i] = 0;
+			meta[i] = 0;
+		}
 		
 		this.width = width;
 		this.max = (int)Math.pow( 2, width );
@@ -43,6 +51,25 @@ public class Memory implements TableModel
 		
 		notifyListeners( offset );
 	}
+	
+	public void setMeta( int offset, int metaVal )
+	{
+		meta[offset] = metaVal;
+	}
+	
+	public int getMeta( int offset )
+	{
+		return meta[offset];
+	}
+	
+	protected boolean isImplemented( int offset )
+	{
+		if( (meta[offset] & UNIMPLEMENTED) == UNIMPLEMENTED )
+			return false;
+		
+		return true;
+	}
+	
 	
 	public int getSize()
 	{
@@ -139,6 +166,9 @@ public class Memory implements TableModel
 		if( debug )
 			System.out.println( "[Mem]\t0x" +Integer.toHexString(offset)+ " = " +Integer.toHexString(sRAM[offset]) );
 		
+		if( !isImplemented( offset ) )
+			return 0x00;
+		
 		if( aliases.containsKey( "INDF" ) && aliases.containsKey( "FSR" ) )
 		{
 			if( offset == aliases.get("INDF") )
@@ -190,6 +220,7 @@ public class Memory implements TableModel
 				System.err.println( "Could not notify listener '" +l+ "'" );
 			}
 		}
+		lastOffset = offset;
 	}
 	
 	
@@ -230,21 +261,30 @@ public class Memory implements TableModel
 	/** Returns the value for the cell at columnIndex and rowIndex. **/
 	public Object getValueAt( int rowIndex, int columnIndex )
 	{
+		String buffer = "???";
 		switch( columnIndex )
 		{
 			case 0:
-				return "0x" + Integer.toHexString( rowIndex );
+				buffer = "0x" + Integer.toHexString( rowIndex );
+				break;
 				
 			case 1:
 				String alias = getOffsetAlias( rowIndex );
-				return ( alias != null ? alias : "" );
+				buffer = ( alias != null ? alias : "" );
+				break;
 				
 			case 2:
 				int value = 0;
 				try{ value = get( rowIndex ); }catch( NoSuchAliasException err ){ err.printStackTrace(); }
-				return "0x" + Integer.toHexString( value );
-		}
-		return "???";
+				buffer = "0x" + Integer.toHexString( value );
+				
+				if( lastOffset == rowIndex )
+					buffer = buffer + " <--";
+				
+				break;
+		}		
+		
+		return buffer;
 	}
 
 	/** Returns true if the cell at rowIndex and columnIndex is editable. **/

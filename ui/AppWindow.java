@@ -40,8 +40,10 @@ public class AppWindow extends JFrame
 		
 		memoryTabs.addTab( "File Registers", new JScrollPane( new MemoryPanel( processor.getRAM() ) ) );
 		memoryTabs.addTab( "Stack", new JScrollPane( new MemoryPanel( processor.getStack() ) ) );
-		memoryTabs.addTab( "Program Memory", new JScrollPane( new MemoryPanel( processor.getROM() ) ) );
+		//memoryTabs.addTab( "Program Memory", new JScrollPane( new MemoryPanel( processor.getROM() ) ) );
 		
+		
+		add( new JScrollPane( new MemoryPanel( processor.getROM() ) ), BorderLayout.CENTER );
 		
 		
 		
@@ -72,7 +74,7 @@ public class AppWindow extends JFrame
 			public void actionPerformed( ActionEvent e )
 			{
 				clk.attach( processor.clkWire );
-				clk.setFrequency( 5 );
+				clk.setFrequency( 160 );
 			}
 		});
 		chipControlBar.add( runBtn );

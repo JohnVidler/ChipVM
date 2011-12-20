@@ -13,15 +13,19 @@ public class Processor extends Chip
 	
 	public int skippedInstructions = 0;
 	
+	private int op = 0;
+	
 	public WireListener clkWire = new WireListener()
 	{
 		public void stateChange( WireState state )
 		{
 			if( state == WireState.RISING )
 			{
-				int op = op_readNextInstruction();
-			
-				System.out.print( "0x" +Integer.toHexString(getPC()) + "\t" + Integer.toHexString(op) + "\t" );
+				op = op_readNextInstruction();
+			}
+			else if( state == WireState.HIGH )
+			{
+				//System.out.print( "0x" +Integer.toHexString(getPC()) + "\t" + Integer.toHexString(op) + "\t" );
 				
 				try
 				{
@@ -33,7 +37,9 @@ public class Processor extends Chip
 					System.out.println( e.getMessage() );
 					//e.printStackTrace();
 				}
-				
+			}
+			else if( state == WireState.LOW )
+			{
 				// Catch if the processor runs out of PROGMEM
 				if( getPC() + 1 > progmem.getSize()-1 )
 				{
@@ -87,7 +93,10 @@ public class Processor extends Chip
 			err.printStackTrace();
 		}
 		
-		try { registers.inc( "PCL" ); }
+		try
+		{
+			registers.inc( "PCL" );
+		}
 		catch( Throwable t ){ System.err.println( "Could not inc PCL (No PCL?)" ); System.exit(1); }
 				
 		return op;

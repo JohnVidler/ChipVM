@@ -1,14 +1,14 @@
 package hardware;
 
-public class Pic10f200 extends PicProcessor
+public class Pic10f202 extends PicProcessor
 {
 	
 	
-	public Pic10f200( int program[] )
+	public Pic10f202( int program[] )
 	{
 		super( program );
 		progmem = new Memory( 256, 12 );			// 256 lines of 12-bit opcode instructions
-		registers = new Memory( 0x00FF, 8 );		// 0x00FF registers
+		registers = new Memory( 0x1FF, 8 );		// 0x1FF registers
 		stack = new Stack( 2, 9 );					// Two level stack
 		
 		// Load the program in ROM
@@ -23,9 +23,6 @@ public class Pic10f200 extends PicProcessor
 		registers.setAlias( 0x05,	"OSCCAL" );
 		registers.setAlias( 0x06,	"GPIO" );
 		registers.setAlias( 0x07,	"CMCON0" );
-		
-		for( int i=0x08; i<0x0F; i++ )
-			registers.setMeta( i, Memory.UNIMPLEMENTED );
 		
 		
 		// Build a new unstruction set
@@ -50,3 +47,4 @@ public class Pic10f200 extends PicProcessor
 	}
 	
 }
+
