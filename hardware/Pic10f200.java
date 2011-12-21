@@ -11,6 +11,17 @@ public class Pic10f200 extends PicProcessor
 		registers = new Memory( 0x00FF, 8 );		// 0x00FF registers
 		stack = new Stack( 2, 9 );					// Two level stack
 		
+		Memory offsetMemory = (Memory)new ProxyMemory( registers, 8, 0x10 );
+		
+		try
+		{
+			offsetMemory.set( 0, 0x42 );
+		}
+		catch( Exception e )
+		{
+			e.printStackTrace();
+		}
+		
 		// Load the program in ROM
 		flash( program );
 		

@@ -28,8 +28,8 @@ public class PicVM
 		}
 		
 		
-		//Processor proc = new Pic10f200( progmem );
-		Processor proc = new Pic10f320( progmem );
+		Processor proc = new Pic10f200( progmem );
+		//Processor proc = new Pic10f320( progmem );
 		
 		mainWin = new AppWindow( proc );
 		

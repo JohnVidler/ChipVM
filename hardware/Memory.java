@@ -38,6 +38,13 @@ public class Memory implements TableModel
 		this.max = (int)Math.pow( 2, width );
 	}
 	
+	protected Memory( int width )
+	{
+		/* Stub, so we can extend the class with minimal constructors */
+		this.width = width;
+		this.max = (int)Math.pow( 2, width );
+	}
+	
 	public void setAlias( int offset, String name )
 	{
 		aliases.put( name, offset );
@@ -114,7 +121,7 @@ public class Memory implements TableModel
 		// Store only positive integers...
 		while( value < 0 )
 			value = max + value;
-			
+		
 		// ...that actually fit!
 		sRAM[offset] = value % max;
 		

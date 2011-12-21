@@ -20,20 +20,6 @@ public class AppWindow extends JFrame
 		setLayout( new BorderLayout() );
 		
 		
-		
-		
-		// Determine the new location of the window
-		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-		Dimension window = getSize();
-		int x = (dim.width/2) - window.width;
-		int y = 100;
-
-		// Move the window
-		setLocation(x, y);
-		
-		
-		
-		
 		// Build the left side bar
 		JTabbedPane memoryTabs = new JTabbedPane();
 		add( memoryTabs, BorderLayout.WEST );
@@ -74,7 +60,7 @@ public class AppWindow extends JFrame
 			public void actionPerformed( ActionEvent e )
 			{
 				clk.attach( processor.clkWire );
-				clk.setFrequency( 160 );
+				clk.setFrequency( 100 );
 			}
 		});
 		chipControlBar.add( runBtn );
@@ -82,6 +68,16 @@ public class AppWindow extends JFrame
 		setPreferredSize( new Dimension( 640, 480 ) );
 		setMinimumSize( new Dimension( 640, 480 ) );
 		setVisible( true );
+		
+		
+		// Determine the new location of the window
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		Dimension window = getSize();
+		int x = (dim.width/2) - (window.width / 2);
+		int y = (dim.height/2) - (window.height / 2);
+
+		// Move the window
+		setLocation(x, y);
 	}
 	
 	
