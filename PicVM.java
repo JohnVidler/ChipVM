@@ -27,6 +27,9 @@ public class PicVM
 			System.exit( -1 );
 		}
 		
+		PersistentEEPROM eeprom = new PersistentEEPROM( 1024, new File("eeprom") );
+		eeprom.readIn();
+		
 		
 		Processor proc = new Pic10f200( progmem );
 		//Processor proc = new Pic10f320( progmem );
