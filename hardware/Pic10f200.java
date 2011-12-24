@@ -36,7 +36,7 @@ public class Pic10f200 extends PicProcessor
 		registers.setAlias( 0x07,	"CMCON0" );
 		
 		for( int i=0x08; i<0x0F; i++ )
-			registers.setMeta( i, Memory.UNIMPLEMENTED );
+			registers.setMeta( i, new RegisterMeta(false) );
 		
 		
 		// Build a new unstruction set

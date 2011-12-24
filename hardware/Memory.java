@@ -5,12 +5,19 @@ import javax.swing.event.*;
 import javax.swing.table.*;
 import javax.swing.*;
 
+/**
+ * A class to model SRAM memory in microcontrollers.
+ * 
+ * Functions by means of event pushing.
+ * 
+ * @author John Vidler
+ */
 public class Memory implements TableModel
 {
 	public static int UNIMPLEMENTED = 1;
 	
 	protected TreeMap<String, Integer> aliases = null;
-	protected int meta[];
+	protected RegisterMeta meta[];
 	protected int sRAM[];
 	protected int max;
 	protected int width;
@@ -23,21 +30,33 @@ public class Memory implements TableModel
 	protected int lastOffset = 0;
 	
 	
+	/**
+	 * Create a new memory area, defining the number of registers and the bit-width
+	 * 
+	 * @param size The number of registers to create in this memory area.
+	 * @param width The bit-width to simulate
+	 */
 	public Memory( int size, int width )
 	{
 		aliases = new TreeMap<String, Integer>();
-		meta = new int[ size ];
 		sRAM = new int[ size ];
+		meta = new RegisterMeta[ size ];
 		for( int i=0; i<size; i++ )
 		{
 			sRAM[i] = 0;
-			meta[i] = 0;
+			meta[i] = new RegisterMeta();
 		}
 		
 		this.width = width;
 		this.max = (int)Math.pow( 2, width );
 	}
 	
+	/**
+	 * Creates a non-functional, uninitialized memory area. Should only be used by
+	 * internal methods to create a 'bare' Memory object for complex initialization
+	 * 
+	 * @param width The bit-width to simulate
+	 */
 	protected Memory( int width )
 	{
 		/* Stub, so we can extend the class with minimal constructors */
@@ -45,12 +64,26 @@ public class Memory implements TableModel
 		this.max = (int)Math.pow( 2, width );
 	}
 	
+	/**
+	 * Sets an alias for a given memory offset in this area.
+	 * 
+	 * <b>Note:</b> Aliases are unique per memory area, if two locations are set to the same
+	 * address, only the last one will have the alias.
+	 * 
+	 * @param offset The register offset to set the alias for.
+	 * @param name The alias to use for this register.
+	 */
 	public void setAlias( int offset, String name )
 	{
 		aliases.put( name, offset );
 		notifyListeners( offset );
 	}
 	
+	/**
+	 * Removes an alias.
+	 * 
+	 * @param name The alias to remove - as there can only be one, no offset is required.
+	 */
 	public void clearAlias( String name )
 	{
 		int offset = aliases.get( name );
@@ -59,24 +92,29 @@ public class Memory implements TableModel
 		notifyListeners( offset );
 	}
 	
-	public void setMeta( int offset, int metaVal )
+	/**
+	 * Sets the metadata object for a given register.
+	 * 
+	 * @param offset The register offset to set metadata for.
+	 * @param metaData The new metadata object to use for this register.
+	 */
+	public void setMeta( int offset, RegisterMeta metaData )
 	{
-		meta[offset] = metaVal;
+		meta[offset] = metaData;
 	}
 	
-	public int getMeta( int offset )
+	/**
+	 * Returns the RegisterMeta object for the register at 'offset'
+	 * 
+	 * @param offset The register to query for metadata.
+	 * @return The RegisterMeta object for the register at 'offset'
+	 * 
+	 * @see RegisterMeta
+	 */
+	public RegisterMeta getMeta( int offset )
 	{
 		return meta[offset];
 	}
-	
-	protected boolean isImplemented( int offset )
-	{
-		if( (meta[offset] & UNIMPLEMENTED) == UNIMPLEMENTED )
-			return false;
-		
-		return true;
-	}
-	
 	
 	public int getSize()
 	{
@@ -173,7 +211,7 @@ public class Memory implements TableModel
 		if( debug )
 			System.out.println( "[Mem]\t0x" +Integer.toHexString(offset)+ " = " +Integer.toHexString(sRAM[offset]) );
 		
-		if( !isImplemented( offset ) )
+		if( !meta[offset].isImplemented )
 			return 0x00;
 		
 		if( aliases.containsKey( "INDF" ) && aliases.containsKey( "FSR" ) )
@@ -231,6 +269,33 @@ public class Memory implements TableModel
 	}
 	
 	
+	/** Register meta listeners - for pseudo-interrupt driven stuff */
+	
+	public void addRegisterListener( String name, RegisterListener l ) throws NoSuchAliasException
+	{
+		Integer offset = aliases.get( name );
+		if( offset == null )
+			throw new NoSuchAliasException( "No such alias '" +name+ "'" );
+		
+		addRegisterListener( offset, l );
+	}
+	public void addRegisterListener( int offset, RegisterListener l )
+	{
+		meta[offset].addListener( l );
+	}
+	
+	public void removeRegisterListener( String name, RegisterListener l ) throws NoSuchAliasException
+	{
+		Integer offset = aliases.get( name );
+		if( offset == null )
+			throw new NoSuchAliasException( "No such alias '" +name+ "'" );
+		
+		removeRegisterListener( offset, l );
+	}
+	public void removeRegisterListener( int offset, RegisterListener l )
+	{
+		meta[offset].removeListener( l );
+	}
 	
 	
 	/** TableModel required methods **/

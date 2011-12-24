@@ -8,6 +8,7 @@ all:
 	$(CC) $(CFLAGS)  ui/*.java hardware/*.java file/*.java *.java
 
 docs:
+	mkdir -p Docs
 	javadoc -d Docs ui/*.java hardware/*.java file/*.java *.java
 
 clean:
