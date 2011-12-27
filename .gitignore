@@ -1,3 +1,4 @@
 *.class
 eeprom
 Docs
+build
