@@ -1,16 +1,18 @@
 CC=javac
-CFLAGS=-Xlint:unchecked
+CFLAGS=-Xlint:unchecked -d build -cp src
 #-Xlint:unchecked
 
 DRIVER=PicVM
 
 all:
-	$(CC) $(CFLAGS)  ui/*.java hardware/*.java file/*.java *.java
+	mkdir -p build
+	$(CC) $(CFLAGS) src/ui/*.java src/hardware/*.java src/file/*.java src/*.java
+	cp demo.hex build/demo.hex
 
 docs:
 	mkdir -p Docs
-	javadoc -d Docs ui/*.java hardware/*.java file/*.java *.java
+	javadoc -d Docs src/ui/*.java src/hardware/*.java src/file/*.java src/*.java
 
 clean:
 	rm -rfv Docs
-	rm -rfv  ui/*.class hardware/*.class file/*.class *.class
+	rm -rfv build
