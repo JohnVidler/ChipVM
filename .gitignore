@@ -2,3 +2,5 @@
 eeprom
 Docs
 build
+/dist/
+/nbproject/private/
