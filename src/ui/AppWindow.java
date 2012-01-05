@@ -12,6 +12,8 @@ public class AppWindow extends JFrame
 {
 	protected ManualPulseGen pulseGen = new ManualPulseGen();
 	protected Clock clk = new Clock();
+        
+        protected Timer updateUITimer = new Timer();
 	
 	public AppWindow( final Processor processor )
 	{

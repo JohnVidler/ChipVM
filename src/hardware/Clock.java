@@ -4,6 +4,7 @@ public class Clock
 {
 	protected Thread internalThread;
 	protected int frequency = 1;
+        protected long realFrequency = 0;
 	protected boolean running = false;
 	
 	protected WireState state = WireState.LOW;
@@ -46,7 +47,6 @@ public class Clock
 						long clocksFrame = 0;
 						while( running )
 						{
-							clocksFrame = System.currentTimeMillis();
 							switch( state )
 							{
 								case LOW:		state = WireState.RISING;	break;
@@ -72,12 +72,12 @@ public class Clock
 							{
 								System.err.println( "Clock overrun! Timings may be off!" );
 							}
-
+                                                        
 							clocks++;
-							if( System.currentTimeMillis() < clocksFrame )
+							if( System.currentTimeMillis() > clocksFrame )
 							{
 								clocksFrame = System.currentTimeMillis() + 1000;
-								System.out.println( "Clocks/sec -> " +clocks );
+								realFrequency = clocks;
 								clocks = 0;
 							}
 						}
@@ -97,4 +97,9 @@ public class Clock
 	{
 		listener = l;
 	}
+        
+        public long getRealFrequency()
+        {
+            return realFrequency;
+        }
 }
