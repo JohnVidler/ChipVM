@@ -220,6 +220,12 @@ public class PicInstructionSet extends InstructionSet
 			out.println( "GOTO 0x" + Integer.toHexString(offset) );
 			return 0;
 		}
+                
+                @Override
+                public String getDissasembly( int op )
+                {
+                    return this.getName() + " 0x" + Integer.toHexString(op & 0x1FF);
+                }
 	};
 	
 	

@@ -8,6 +8,8 @@ import java.awt.event.*;
 import hardware.Processor;
 import hardware.ManualPulseGen;
 import hardware.Clock;
+import hardware.WireListener;
+import hardware.WireState;
 
 public class AppWindow extends JFrame
 {
@@ -32,8 +34,30 @@ public class AppWindow extends JFrame
 		//memoryTabs.addTab( "Program Memory", new JScrollPane( new MemoryPanel( processor.getROM() ) ) );
 		
 		
-		add( new JScrollPane( new MemoryPanel( processor.getROM() ) ), BorderLayout.CENTER );
+                final DissasemblyPanel dissasembly = new DissasemblyPanel( processor.getROM() );
+		add( new JScrollPane( dissasembly ), BorderLayout.CENTER );
 		
+                pulseGen.attach( processor.clkWire );
+                pulseGen.attach( new WireListener(){
+
+                    @Override
+                    public void stateChange(WireState state)
+                    {
+                        dissasembly.setPC( processor.getPC() );
+                    }
+                    
+                });
+                
+                clk.attach( processor.clkWire );
+                clk.attach( new WireListener(){
+
+                    @Override
+                    public void stateChange(WireState state)
+                    {
+                        dissasembly.setPC( processor.getPC() );
+                    }
+                    
+                });
 		
 		
 		// Temp
@@ -51,7 +75,6 @@ public class AppWindow extends JFrame
 		{
 			public void actionPerformed( ActionEvent e )
 			{
-				pulseGen.attach( processor.clkWire );
 				pulseGen.pulse();
 			}
 		});
@@ -62,7 +85,6 @@ public class AppWindow extends JFrame
 		{
 			public void actionPerformed( ActionEvent e )
 			{
-				clk.attach( processor.clkWire );
 				clk.setFrequency( 100 );
 			}
 		});

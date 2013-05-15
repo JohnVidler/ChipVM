@@ -26,6 +26,10 @@ public abstract class Instruction implements Comparable<Object>
 	public int getMask() { return mask; }
 	
 	public abstract int operator( Processor p, Memory m, int op ) throws Throwable;
+        public String getDissasembly( int op )
+        {
+            return getName();
+        }
 	
 	public int compareTo( Object o )
 	{

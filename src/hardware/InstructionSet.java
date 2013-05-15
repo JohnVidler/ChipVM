@@ -24,6 +24,16 @@ public class InstructionSet
 		out.println( "Added instruction " +i.getOpcode() );
 	}
 	
+        public Instruction translate( int opcode )
+        {
+            for( Instruction ins : instructions )
+            {
+                if( (opcode & ins.getMask()) == ins.getOpcode() )
+                    return ins;
+            }
+            return null;
+        }
+        
 	public void remove( String mnemonic )
 	{
 		for( int i=0; i<instructions.size(); i++ )

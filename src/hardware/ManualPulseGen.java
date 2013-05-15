@@ -1,19 +1,24 @@
 package hardware;
 
+import java.util.Vector;
+
 public class ManualPulseGen
 {
-	protected WireListener listener = null;
+	protected Vector<WireListener> listeners = new Vector<WireListener>();
 	
 	public void attach( WireListener l )
-	{
-		listener = l;
-	}
+        {
+            listeners.add( l );
+        }
 	
 	public void pulse()
 	{
-		listener.stateChange( WireState.RISING );
-		listener.stateChange( WireState.HIGH );
-		listener.stateChange( WireState.FALLING );
-		listener.stateChange( WireState.LOW );
+            for( WireListener l : listeners )
+            {
+		l.stateChange( WireState.RISING );
+		l.stateChange( WireState.HIGH );
+		l.stateChange( WireState.FALLING );
+		l.stateChange( WireState.LOW );
+            }
 	}
 }

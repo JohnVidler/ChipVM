@@ -1,5 +1,7 @@
 package hardware;
 
+import java.util.Vector;
+
 public class Clock
 {
 	protected Thread internalThread;
@@ -8,7 +10,7 @@ public class Clock
 	protected boolean running = false;
 	
 	protected WireState state = WireState.LOW;
-	protected WireListener listener = null;
+	protected Vector<WireListener> listeners = new Vector<WireListener>();
 
 	protected long clocksPerSec = 0;
 	
@@ -55,9 +57,9 @@ public class Clock
 								case FALLING:	state = WireState.LOW;		break;
 							}
 							
-							if( listener != null )
-							{
-								listener.stateChange( state );
+							for( WireListener l : listeners )
+                                                        {
+								l.stateChange( state );
 							}
 							
 							try
@@ -95,7 +97,7 @@ public class Clock
 	
 	public void attach( WireListener l )
 	{
-		listener = l;
+		listeners.add( l );
 	}
         
         public long getRealFrequency()
