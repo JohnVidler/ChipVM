@@ -3,7 +3,6 @@ package hardware;
 import java.util.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
-import javax.swing.*;
 
 /**
  * A class to model SRAM memory in microcontrollers.
@@ -25,7 +24,7 @@ public class Memory implements TableModel
 	public boolean debug = false;
 	
 	/* TableModel variables */
-	protected Vector<TableModelListener>listeners = new Vector<TableModelListener>();
+	protected Vector<TableModelListener> listeners = new Vector<TableModelListener>();
 	protected String[] columnNames = { "Offset", "Alias", "Value" };
 	protected int lastOffset = 0;
 	

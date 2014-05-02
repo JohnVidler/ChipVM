@@ -51,16 +51,14 @@ public class Clock
 						{
 							switch( state )
 							{
-								case LOW:		state = WireState.RISING;	break;
+								case LOW:	state = WireState.RISING;	break;
 								case RISING:	state = WireState.HIGH;		break;
-								case HIGH:		state = WireState.FALLING;	break;
+								case HIGH:	state = WireState.FALLING;	break;
 								case FALLING:	state = WireState.LOW;		break;
 							}
 							
 							for( WireListener l : listeners )
-                                                        {
 								l.stateChange( state );
-							}
 							
 							try
 							{

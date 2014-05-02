@@ -1,6 +1,6 @@
 package hardware;
 
-public class Processor extends Chip
+public abstract class Processor extends Chip
 {
 	private Processor self = null;
 	
@@ -51,9 +51,9 @@ public class Processor extends Chip
 		}
 	};
 	
-	public Processor( int program[] )
+	public Processor( int pins, int program[] )
 	{
-		super( 8 );
+		super( pins );
 		self = this;
 	}
 	
@@ -75,31 +75,10 @@ public class Processor extends Chip
 	}
 	
 	public Memory getRAM() { return registers; }
-	public Memory getStack() { return stack; }
+	public Stack getStack() { return stack; }
 	public Memory getROM() { return progmem; }
 	public int getPC(){ return 0x00; }
 	
 	
-	protected int op_readNextInstruction()
-	{
-		int op = 0;
-		try
-		{
-			op = progmem.get( registers.get( "PCL" ) );
-		}
-		catch( Exception err )
-		{
-			System.err.println( err );
-			err.printStackTrace();
-		}
-		
-		try
-		{
-			registers.inc( "PCL" );
-		}
-		catch( Throwable t ){ System.err.println( "Could not inc PCL (No PCL?)" ); System.exit(1); }
-				
-		return op;
-	}
-	
+	protected abstract int op_readNextInstruction();
 }

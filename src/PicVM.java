@@ -1,3 +1,4 @@
+import hardware.pic.Pic10f200;
 import ui.*;
 import hardware.*;
 import file.*;
